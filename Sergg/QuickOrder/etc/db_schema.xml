@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="sergg_quickorder" resource="default" engine="innodb" comment="QuickOrder">
+        <column xsi:type="int"
+                name="order_id"
+                padding="10"
+                unsigned="true"
+                nullable="false"
+                identity="true"
+                comment="Order Id"/>
+        <column xsi:type="varchar"
+                name="name"
+                length="30"
+                nullable="false"
+                comment="Customer name"
+        />
+        <column xsi:type="int"
+                name="phone"
+                padding="20"
+                unsigned="true"
+                nullable="false"
+                identity="false"
+                comment="Customer phone"
+        />
+        <column xsi:type="varchar"
+                name="email"
+                length="30"
+                nullable="false"
+                comment="Customer email"
+        />
+        <column xsi:type="varchar"
+                name="sku"
+                length="50"
+                nullable="false"
+                comment="Product Sku"
+        />
+        <column xsi:type="varchar"
+                name="status"
+                length="50"
+                nullable="false"
+                comment="Order Status"
+        />
+        <column xsi:type="timestamp"
+                name="created_at"
+                nullable="false"
+                comment="Create Time"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="order_id"/>
+        </constraint>
+    </table>
+    <table name="sergg_quickorder_status" resource="default" engine="innodb" comment="QuickOrder">
+        <column xsi:type="int"
+                name="status_id"
+                padding="10"
+                unsigned="true"
+                nullable="false"
+                identity="true"
+                comment="Status Id"/>
+        <column xsi:type="varchar"
+                name="status_code"
+                length="50"
+                nullable="false"
+                comment="Status code"
+        />
+        <column xsi:type="varchar"
+                name="label"
+                length="50"
+                nullable="false"
+                comment="Label"
+        />
+        <column xsi:type="smallint"
+                name="is_default"
+                padding="1"
+                unsigned="true"
+                nullable="true"
+                identity="false"
+                comment="Is Default"
+        />
+        <column xsi:type="smallint"
+                name="is_deleted"
+                padding="1"
+                unsigned="true"
+                default= "0"
+                nullable="false"
+                identity="false"
+                comment="Is Deleted"
+        />
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="status_id"/>
+        </constraint>
+    </table>
+</schema>

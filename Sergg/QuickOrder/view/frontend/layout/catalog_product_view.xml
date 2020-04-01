@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+        <referenceBlock name="product.info.main">
+            <block
+                    name="sergg_quick_order"
+                    after="product.info.addtocart"
+                    template="Sergg_QuickOrder::product/view/addtocart.phtml"
+            />
+        </referenceBlock>
+</page>
