@@ -33,6 +33,10 @@ class MassDelete extends Action
         $this->logger     = $logger;
         parent::__construct($context);
     }
+    public function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Sergg_QuickOrder::quickorder');
+    }
 
     /**
      * @inheritDoc

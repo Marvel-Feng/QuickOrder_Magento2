@@ -1,86 +1,86 @@
 <?php
 
-
 namespace Sergg\QuickOrder\Controller\Adminhtml\QuickOrder;
-
-use Sergg\QuickOrder\Api\Model\QuickOrderInterfaceFactory;
-use Sergg\QuickOrder\Api\Repository\QuickOrderRepositoryInterface;
-use Sergg\QuickOrder\Model\QuickOrder;
-use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\Request\DataPersistorInterface;
-use Magento\Framework\Controller\ResultFactory;
-use Magento\Framework\Exception\LocalizedException;
-use Psr\Log\LoggerInterface;
+use Magento\Framework\Controller\Result\JsonFactory;
+use Sergg\QuickOrder\Model\QuickOrderFactory;
 
 /**
  * Class InlineEdit
  * @package Sergg\QuickOrder\Controller\Adminhtml\QuickOrder
  */
-class InlineEdit extends Action
+class InlineEdit extends \Magento\Backend\App\Action
 {
-    /** @var QuickOrderRepositoryInterface */
-    private $repository;
+    /**
+     * @var JsonFactory
+     */
+    protected $jsonFactory;
 
-    /** @var QuickOrderInterfaceFactory */
-    private $modelFactory;
+    /**
+     * @var QuickOrderFactory
+     */
+    protected $quickorderFactory;
 
-    /** @var DataPersistorInterface */
-    private $dataPersistor;
-
-    /** @var LoggerInterface */
-    private $logger;
-
+    /**
+     * InlineEdit constructor.
+     * @param Context $context
+     * @param JsonFactory $jsonFactory
+     * @param QuickOrderFactory $quickorderFactory\
+     */
     public function __construct(
         Context $context,
-        QuickOrderRepositoryInterface $repository,
-        QuickOrderInterfaceFactory $quickorderFactory,
-        DataPersistorInterface $dataPersistor,
-        LoggerInterface $logger
-    )
-    {
-        $this->repository = $repository;
-        $this->modelFactory = $quickorderFactory;
-        $this->dataPersistor = $dataPersistor;
-        $this->logger = $logger;
-
+        JsonFactory $jsonFactory,
+        QuickOrderFactory $quickorderFactory
+    ) {
         parent::__construct($context);
+        $this->jsonFactory = $jsonFactory;
+        $this->quickorderFactory = $quickorderFactory;
     }
 
     /**
-     * @inheritDoc
+     * Check admin permissions for this controller
+     *
+     * @return boolean
+     */
+    public function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Sergg_QuickOrder::quickorder');
+    }
+
+    /**
+     * Inline edit action
+     *
+     * @return \Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
-        /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
-        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        $data = $this->getRequest()->getPostValue();
+        /** @var \Magento\Framework\Controller\Result\Json $resultJson */
+        $resultJson = $this->jsonFactory->create();
+        $error = false;
+        $messages = [];
 
-        if ($data) {
-            /** @var QuickOrder $model */
-            $model = $this->modelFactory->create();
-
-            $id = $this->getRequest()->getParam('order_id');
-
-                    $model = $this->repository->getById($id);
-                // Foreach Vstavite :)
-
-            $model->setData($data);
-
-            try {
-                $this->repository->save($model);
-                $this->messageManager->addSuccessMessage(__('You saved the order.'));
-                $this->dataPersistor->clear('quickorder');
-                return $resultRedirect->setPath('*/*/listing');
-            } catch (LocalizedException $e) {
-                $this->messageManager->addErrorMessage($e->getMessage());
-            } catch (\Exception $e) {
-                $this->messageManager->addExceptionMessage($e, __('Something went wrong while saving the user.'));
+        if ($this->getRequest()->getParam('isAjax')) {
+            $postItems = $this->getRequest()->getParam('items', []);
+            if (!count($postItems)) {
+                $messages[] = __('Please correct the data sent.');
+                $error = true;
+            } else {
+                foreach (array_keys($postItems) as $modelid) {
+                    $model = $this->quickorderFactory->create()->load($modelid);
+                    try {
+                        $model->setData(array_merge($model->getData(), $postItems[$modelid]));
+                        $model->save();
+                    } catch (\Exception $e) {
+                        $messages[] = "[QuickOrder ID: {$modelid}]  {$e->getMessage()}";
+                        $error = true;
+                    }
+                }
             }
-
-            $this->dataPersistor->set('quickorder', $data);
-            return $resultRedirect->setPath('*/*/edit', ['order_id' => $id]);
         }
-        return $resultRedirect->setPath('*/*/listing');
+
+        return $resultJson->setData([
+            'messages' => $messages,
+            'error' => $error
+        ]);
     }
 }

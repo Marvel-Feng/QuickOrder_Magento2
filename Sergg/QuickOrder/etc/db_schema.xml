@@ -47,10 +47,18 @@
                 nullable="false"
                 comment="Order Status"
         />
-        <column xsi:type="timestamp"
-                name="created_at"
+        <column name="created_at"
                 nullable="false"
-                comment="Create Time"/>
+                xsi:type="datetime"
+                default="CURRENT_TIMESTAMP"
+                on_update="false"
+        />
+        <column name="updated_at"
+                nullable="true"
+                xsi:type="datetime"
+                default="CURRENT_TIMESTAMP"
+                on_update="true"
+        />
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="order_id"/>
         </constraint>

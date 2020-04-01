@@ -42,6 +42,10 @@ class Save extends Action
 
         parent::__construct($context);
     }
+    public function _isAllowed()
+    {
+        return $this->_authorization->isAllowed('Sergg_QuickOrder::quickorder');
+    }
 
     /**
      * @inheritDoc

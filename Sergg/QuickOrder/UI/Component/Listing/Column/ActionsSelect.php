@@ -33,9 +33,5 @@ class ActionsSelect implements ArrayInterface
         return $this->getOptions();
 
 
-        /*return [
-            ['value' => 1, 'label' => __('True')],
-            ['value' => 0, 'label' => __('False')]
-        ];*/
     }
 }
