@@ -1,0 +1,57 @@
+
+<?php
+/* @var $block  Sergg\QuickOrder\Block\QuickOrder */
+?>
+<div class="quickorder-block">
+    <button class="action primary" data-trigger="trigger"><?php echo $block->escapeHtmlAttr(__('Quick Order')) ?></button>
+    <div class="content" data-bind="mageInit: {
+            'Magento_Ui/js/modal/modal':{
+                'type': 'popup',
+                'title': '<?php echo $block->escapeHtmlAttr(__('Quick Order')) ?>',
+                'modalClass': 'quickOrder-modal',
+                'trigger': '[data-trigger=trigger]',
+                'wrapperClass': 'fastOrder-wrapper',
+                'responsive': true,
+                'responsiveClass': 'custom-slide',
+                'buttons': []
+            }}">
+        <form id="quickorder-form" action="<?php echo $block->getUrl('quickorder/quickorder/quickordercreate/'); ?>"
+              method="post">
+            <div class="quickorder-phone-code">
+                <div>
+                    <?php if (!empty($block->getProductSku())): ?>
+                        <input type="hidden" name="sku" value="<?php echo $block->getProductSku() ?>">
+                    <?php endif; ?>
+                </div>
+                <div id="quickorder-warning" class="warning">
+                </div>
+                <div class="input-box">
+                    <input type="text" name="name" class="required-entry validate-text" id="name"
+                           placeholder="<?php echo __('Name') ?>"/>
+                </div>
+                <div class="input-box">
+                    <input type="text" name="phone" class="required-entry validate-number" id="phone"
+                           placeholder="<?php echo __('Phone number') ?>"/>
+                </div>
+                    <div class="input-box">
+                        <input type="text" name="email" class="validate-email" id="email-fastorder"
+                               placeholder="<?php echo __('Email') ?>"/>
+                    </div>
+            </div>
+            <button id="order-button" type="submit" class="search-global-action action primary"
+                    title="<?php echo __('Place order now') ?>">
+                <?php echo __('Place order now') ?>
+            </button>
+        </form>
+    </div>
+
+</div>
+
+<script type="text/x-magento-init">
+            {
+                "#quickorder-form": {
+                    "Sergg_QuickOrder/js/popup": ""
+                }
+            }
+
+</script>

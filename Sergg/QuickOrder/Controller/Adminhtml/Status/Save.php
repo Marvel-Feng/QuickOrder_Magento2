@@ -74,9 +74,9 @@ class Save extends Action
             }
 
             if ($data['is_default'] == 1) {
-                $defaultProduct = $model->getCollection()->addFieldToFilter('is_default', ['eq' => '1'])->load()->getFirstItem();
-                if ($defaultProduct->getId() !== $id) {
-                    $defaultProduct->setData('is_default', '0')->save();
+                $defaultStatus = $model->getCollection()->addFieldToFilter('is_default', ['eq' => '1'])->load()->getFirstItem();
+                if ($defaultStatus->getId() !== $id) {
+                    $defaultStatus->setData('is_default', '0')->save();
                 }
             }
 
