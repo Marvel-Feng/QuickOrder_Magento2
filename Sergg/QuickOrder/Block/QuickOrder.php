@@ -37,7 +37,11 @@ class QuickOrder extends Template
      */
     public function getProductSku()
     {
-        return $this->registry->registry('current_product')->getSku();
+        $productSky = null;
+        if ($this->registry->registry('current_product')) {
+            $productSky = $this->registry->registry('current_product')->getSku();
+        }
+        return $productSky;
     }
 
     /**

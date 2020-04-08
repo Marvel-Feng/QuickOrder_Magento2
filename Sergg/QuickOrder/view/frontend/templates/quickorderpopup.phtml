@@ -1,44 +1,37 @@
 
 <?php
 /* @var $block  Sergg\QuickOrder\Block\QuickOrder */
+
+$productSku = $block->getProductSku()?$block->getProductSku(): $block->getData('sku');
 ?>
 <div class="quickorder-block">
-    <button class="action primary" data-trigger="trigger"><?php echo $block->escapeHtmlAttr(__('Quick Order')) ?></button>
-    <div class="content" data-bind="mageInit: {
-            'Magento_Ui/js/modal/modal':{
-                'type': 'popup',
-                'title': '<?php echo $block->escapeHtmlAttr(__('Quick Order')) ?>',
-                'modalClass': 'quickOrder-modal',
-                'trigger': '[data-trigger=trigger]',
-                'wrapperClass': 'fastOrder-wrapper',
-                'responsive': true,
-                'responsiveClass': 'custom-slide',
-                'buttons': []
-            }}">
-        <form id="quickorder-form" action="<?php echo $block->getUrl('quickorder/quickorder/quickordercreate/'); ?>"
-              method="post">
+    <button class="action primary" id="btn-btn-primary-<?= $productSku?>"><?php echo $block->escapeHtmlAttr(__('Quick Order')) ?></button>
+    <div class="content-<?= $productSku?>">
+        <form id="quickorder-form-<?= $productSku ?>"
+              action="<?php echo $block->getUrl('quickorder/quickorder/quickordercreate/'); ?>"
+              method="post"
+              data-mage-init='{"validation":{}}'>
             <div class="quickorder-phone-code">
                 <div>
-                    <?php if (!empty($block->getProductSku())): ?>
+                    <?php if ($block->getProductSku()): ?>
                         <input type="hidden" name="sku" value="<?php echo $block->getProductSku() ?>">
+                    <?php elseif($block->getData('sku')):?>
+                        <input type="hidden" name="sku" value="<?php echo $block->getData('sku') ?>">
                     <?php endif; ?>
                 </div>
                 <div id="quickorder-warning" class="warning">
                 </div>
-                <div class="input-box">
-                    <input type="text" name="name" class="required-entry validate-text" id="name"
-                           placeholder="<?php echo __('Name') ?>"/>
-                </div>
-                <div class="input-box">
-                    <input type="text" name="phone" class="required-entry validate-number" id="phone"
-                           placeholder="<?php echo __('Phone number') ?>"/>
-                </div>
-                    <div class="input-box">
-                        <input type="text" name="email" class="validate-email" id="email-fastorder"
-                               placeholder="<?php echo __('Email') ?>"/>
-                    </div>
+                <label>Name
+                    <input type="text" name="name" data-validate='{"required":true, "maxlength": 30}'>
+                </label>
+                <label>Phone number
+                    <input type="number" name="phone" data-validate='{"required":true, "maxlength": 30, "number": true}'>
+                </label>
+                <label>Email
+                    <input type="email" name="email" data-validate="{'maxlength': 50, 'validate-email':true }">
+                </label>
             </div>
-            <button id="order-button" type="submit" class="search-global-action action primary"
+            <button id="order-button-<?= $productSku ?>" type="submit" class="search-global-action action primary"
                     title="<?php echo __('Place order now') ?>">
                 <?php echo __('Place order now') ?>
             </button>
@@ -47,11 +40,30 @@
 
 </div>
 
-<script type="text/x-magento-init">
-            {
-                "#quickorder-form": {
-                    "Sergg_QuickOrder/js/popup": ""
-                }
-            }
-
+<!--<script type="text/x-magento-init">-->
+<!--            {-->
+<!--                    "Sergg_QuickOrder/js/popup": ""-->
+<!--            }-->
+<!---->
+<!--</script>-->
+<script>
+    require(
+        [
+            'jquery',
+            'Magento_Ui/js/modal/modal'
+        ],
+        function($,modal) {
+            var options = {
+                type: 'popup',
+                responsive: true,
+                innerScroll: true,
+                title: 'Quick order',
+                buttons: false
+            };
+            var popup = modal(options, $('.content-<?= $productSku?>'));
+            $("#btn-btn-primary-<?=$productSku?>").on("click",function(){
+                $('.content-<?= $productSku?>').modal('openModal');
+            });
+        }
+    );
 </script>

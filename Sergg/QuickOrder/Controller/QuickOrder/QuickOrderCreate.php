@@ -9,7 +9,7 @@ use Psr\Log\LoggerInterface;
 use Sergg\QuickOrder\Api\Model\QuickOrderInterfaceFactory;
 use Sergg\QuickOrder\Api\Repository\QuickOrderRepositoryInterface;
 use Sergg\QuickOrder\Model\Status;
-
+use Sergg\QuickOrder\Controller\QuickOrder\QuickOrderSuccess;
 class QuickOrderCreate extends Action
 {
     protected $repository;
@@ -48,7 +48,7 @@ class QuickOrderCreate extends Action
                 $model->setData($params);
                 $model->setData('status', $statusCode);
                 $this->repository->save($model);
-                $response = $this->_getSuccessResponse();
+              return  $this->_redirect('*/*/quickordersuccess/');
             } catch (\Exception $e) {
                 $this->_logger->logException($e);
                 $response = $this->_getErrorResponse([$e->getMessage()]);
@@ -78,19 +78,4 @@ class QuickOrderCreate extends Action
         return $response;
     }
 
-    /**
-     * prepare success response
-     * for checkout
-     * @return array
-     */
-    protected function _getSuccessResponse()
-    {
-        $response =
-            [
-                'is_error' => false,
-                'success_url' => $this->_url->getUrl('/*/'),
-                'is_success' => true
-            ];
-        return $response;
-    }
 }
