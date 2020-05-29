@@ -62,14 +62,17 @@ class StatusTable implements DataPatchInterface
             [
                 self::STATUS_CODE_COL_NAME => 'pending',
                 self::STATUS_LABEL_COL_NAME => 'Pending',
+                self::IS_DEFAULT => 1
             ],
             [
                 self::STATUS_CODE_COL_NAME => 'close',
                 self::STATUS_LABEL_COL_NAME => 'Close',
+                self::IS_DEFAULT => 0
             ],
             [
                 self::STATUS_CODE_COL_NAME => 'process',
                 self::STATUS_LABEL_COL_NAME => 'Process',
+                self::IS_DEFAULT => 0
             ],
         ];
 
