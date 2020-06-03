@@ -3,8 +3,8 @@
 namespace Sergg\QuickOrder\Block;
 
 use Magento\Catalog\Model\Product;
+use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\View\Element\Template;
-use Magento\Framework\Registry;
 
 class QuickOrder extends Template
 {
@@ -13,23 +13,24 @@ class QuickOrder extends Template
      */
     protected $_product;
 
-    protected $registry;
+    protected $dataPersistor;
 
     /**
      * QuickOrder constructor.
      * @param Template\Context $context
      * @param Product $product
+     * @param DataPersistorInterface $dataPersistor
      * @param array $data
      */
     public function __construct(
         Template\Context $context,
         Product $product,
-        Registry $registry,
+        DataPersistorInterface $dataPersistor,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->_product = $product;
-        $this->registry = $registry;
+        $this->dataPersistor = $dataPersistor;
     }
 
     /**
@@ -38,8 +39,8 @@ class QuickOrder extends Template
     public function getProductSku()
     {
         $productSky = null;
-        if ($this->registry->registry('current_product')) {
-            $productSky = $this->registry->registry('current_product')->getSku();
+        if ($this->dataPersistor->get('current_product')) {
+            $productSky = $this->dataPersistor->get('current_product')->getSku();
         }
         return $productSky;
     }
