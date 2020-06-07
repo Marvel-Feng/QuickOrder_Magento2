@@ -47,7 +47,7 @@ class MassDelete extends Action
             return $this->_redirect('*/*/listing');
         }
 
-        $ids = $this->getRequest()->getParam('ids');
+        $ids = $this->getRequest()->getParam('selected');
 
         if (empty($ids)) {
             $this->messageManager->addWarningMessage(__("Please select ids"));

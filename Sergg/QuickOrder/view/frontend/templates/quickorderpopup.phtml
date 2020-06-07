@@ -3,6 +3,7 @@
 
 $productSku = $block->getProductSku() ? $block->getProductSku() : $block->getData('sku');
 ?>
+</br>
 <div class="quickorder-block">
      <button class="action primary"
             id="btn-btn-primary-<?= $productSku  ?>"><?php echo $block->escapeHtmlAttr(__('Quick Order'))  ?></button>
